@@ -10,8 +10,6 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./src/page-template.js");
 
-// TODO: Write Code to gather information about the development team members, and render the HTML file.
-
 const questions = [
   "Name:",
   "Employee ID:",
@@ -57,6 +55,9 @@ const ADD_PROMPT = {
   choices: ["Add Engineer", "Add Intern", "Finish Building team"],
 };
 
+// Initialise team
+const team = [];
+
 const nextMember = async (addMember) => {
   switch (addMember) {
     case "Add Engineer": {
@@ -72,7 +73,7 @@ const nextMember = async (addMember) => {
         ADD_PROMPT,
       ]);
 
-      new Engineer(name, id, email, github);
+      team.push(new Engineer(name, id, email, github));
 
       await nextMember(addMember);
 
@@ -92,7 +93,7 @@ const nextMember = async (addMember) => {
         ADD_PROMPT,
       ]);
 
-      new Intern(name, id, email, school);
+      team.push(new Intern(name, id, email, school));
 
       await nextMember(addMember);
 
@@ -100,6 +101,7 @@ const nextMember = async (addMember) => {
     }
 
     default:
+      fs.writeFile(outputPath, render(team), () => {});
       break;
   }
 };
@@ -118,7 +120,7 @@ const init = async () => {
     ADD_PROMPT,
   ]);
 
-  new Manager(name, id, email, officeNumber);
+  team.push(new Manager(name, id, email, officeNumber));
 
   await nextMember(addMember);
 };
